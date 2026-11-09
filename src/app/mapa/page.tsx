@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import type { LayerGroup, Map as LeafletMap, TileLayer } from "leaflet";
 import { Mapa, LeafletLib } from "@/components/Mapa";
+import { Carregando, gotaCarregandoHtml } from "@/components/Carregando";
 import { NivelBadge } from "@/components/NivelBadge";
 import { buscarCameras, buscarClima, buscarOcorrencias, buscarRiscos, gerarAlertasPrevisao } from "@/lib/api";
 import { Camera, Ocorrencia, PrevisaoClima, RiscoRegiao } from "@/lib/types";
@@ -62,10 +63,9 @@ export default function MapaPage() {
   const aoCriarMapa = useCallback((mapa: LeafletMap, L: LeafletLib) => {
     mapaRef.current = { mapa, L };
 
-    // clique em qualquer ponto mostra o clima e a chuva prevista das proximas 12h
     mapa.on("click", async (evento) => {
       const { lat, lng } = evento.latlng;
-      const popup = L.popup().setLatLng(evento.latlng).setContent("Consultando a previsão...").openOn(mapa);
+      const popup = L.popup().setLatLng(evento.latlng).setContent(gotaCarregandoHtml("Consultando a previsão...")).openOn(mapa);
       try {
         const p = await buscarClima(Number(lat.toFixed(4)), Number(lng.toFixed(4)));
         popup.setContent(
@@ -80,7 +80,6 @@ export default function MapaPage() {
     setPronto(true);
   }, []);
 
-  // radar meteorologico em tempo real (RainViewer)
   useEffect(() => {
     if (!pronto || !mapaRef.current) return;
     const { mapa, L } = mapaRef.current;
@@ -109,7 +108,6 @@ export default function MapaPage() {
     };
   }, [pronto, mostrarRadar]);
 
-  // regioes pintadas pelo risco
   useEffect(() => {
     if (!pronto || !mapaRef.current) return;
     const { mapa, L } = mapaRef.current;
@@ -138,7 +136,6 @@ export default function MapaPage() {
     camadas.current.regioes = grupo;
   }, [pronto, riscos]);
 
-  // ocorrencias ativas com o raio que o algoritmo de rotas evita
   useEffect(() => {
     if (!pronto || !mapaRef.current) return;
     const { mapa, L } = mapaRef.current;
@@ -173,7 +170,6 @@ export default function MapaPage() {
     camadas.current.ocorrencias = grupo;
   }, [pronto, ocorrencias]);
 
-  // cameras
   useEffect(() => {
     if (!pronto || !mapaRef.current) return;
     const { mapa, L } = mapaRef.current;
@@ -264,7 +260,7 @@ export default function MapaPage() {
           <Mapa className="h-[70vh] min-h-[420px] w-full" onPronto={aoCriarMapa} />
           {carregando && (
             <div className="absolute left-1/2 top-4 z-[500] -translate-x-1/2 rounded-full bg-white/95 shadow px-4 py-1.5 text-xs text-slate-700">
-              Atualizando previsão...
+              <Carregando texto="Atualizando previsão..." className="!text-xs" />
             </div>
           )}
           <div className="absolute bottom-6 left-3 z-[500] rounded-xl bg-white/95 shadow p-3 text-xs text-slate-700">
@@ -274,7 +270,7 @@ export default function MapaPage() {
                 Risco {NIVEIS[n].rotulo.toLowerCase()}
               </div>
             ))}
-            {mostrarRadar && <div className="mt-1 text-slate-500">Radar: {radarHora || "carregando"}</div>}
+            {mostrarRadar && <div className="mt-1 text-slate-500">Radar: {radarHora || "..."}</div>}
           </div>
         </div>
 
@@ -293,6 +289,7 @@ export default function MapaPage() {
           </div>
 
           <div className="card max-h-[52vh] overflow-y-auto rounded-2xl p-2">
+            {carregando && riscos.length === 0 && <Carregando texto="Calculando o risco das regiões..." className="p-3" />}
             {riscos.map((r) => (
               <button
                 key={r.regiao.id}

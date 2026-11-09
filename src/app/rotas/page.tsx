@@ -3,6 +3,7 @@
 import { FormEvent, useCallback, useEffect, useRef, useState } from "react";
 import type { LayerGroup, Map as LeafletMap } from "leaflet";
 import { Mapa, LeafletLib } from "@/components/Mapa";
+import { Carregando, GotaCarregando } from "@/components/Carregando";
 import { NivelBadge } from "@/components/NivelBadge";
 import { buscarOcorrencias, buscarRota, buscarRotas, calcularRota, excluirRota, geocodificar, recalcularRota } from "@/lib/api";
 import { Coordenada, LocalEncontrado, Ocorrencia, ResultadoRota, Rota } from "@/lib/types";
@@ -65,7 +66,7 @@ function CampoEndereco({ rotulo, ponto, onChange, cor }: { rotulo: string; ponto
           }}
         />
         <button type="button" className="botao-sec shrink-0" onClick={buscar} disabled={buscando}>
-          {buscando ? "..." : "Buscar"}
+          {buscando ? <GotaCarregando tamanho={16} /> : "Buscar"}
         </button>
       </div>
       {sugestoes.length > 0 && (
@@ -115,7 +116,6 @@ export default function RotasPage() {
 
   const aoCriarMapa = useCallback((mapa: LeafletMap, L: LeafletLib) => {
     mapaRef.current = { mapa, L };
-    // clicar no mapa define origem e depois destino
     mapa.on("click", (e) => {
       const ponto = { texto: `${e.latlng.lat.toFixed(5)}, ${e.latlng.lng.toFixed(5)}`, latitude: e.latlng.lat, longitude: e.latlng.lng };
       if (proximoClique.current === "origem") {
@@ -129,7 +129,6 @@ export default function RotasPage() {
     setPronto(true);
   }, []);
 
-  // alagamentos ativos e o raio evitado pelo algoritmo
   useEffect(() => {
     if (!pronto || !mapaRef.current) return;
     const { mapa, L } = mapaRef.current;
@@ -145,7 +144,6 @@ export default function RotasPage() {
     camadaOcorrencias.current = grupo;
   }, [pronto, ocorrencias]);
 
-  // marcadores de origem/destino enquanto o usuario escolhe
   useEffect(() => {
     if (!pronto || !mapaRef.current || resultado) return;
     const { mapa, L } = mapaRef.current;
@@ -290,7 +288,13 @@ export default function RotasPage() {
             <CampoEndereco rotulo="Destino" ponto={destino} onChange={setDestino} cor="#7c3aed" />
             <div className="flex gap-2">
               <button className="botao flex-1" disabled={carregando || !origem.texto || !destino.texto}>
-                {carregando ? "Calculando..." : "Calcular rota segura"}
+                {carregando ? (
+                  <span className="inline-flex items-center gap-2">
+                    <GotaCarregando tamanho={16} className="!text-white" /> Calculando rota...
+                  </span>
+                ) : (
+                  "Calcular rota segura"
+                )}
               </button>
               <button type="button" className="botao-sec" onClick={limpar}>
                 Limpar
@@ -359,7 +363,12 @@ export default function RotasPage() {
         <div className="flex flex-col gap-4">
           <div className="card relative overflow-hidden rounded-2xl">
             <Mapa className="h-[62vh] min-h-[400px] w-full" onPronto={aoCriarMapa} />
-            {!rota && (
+            {carregando && (
+              <div className="absolute inset-0 z-[600] flex items-center justify-center bg-white/55">
+                <Carregando texto="Calculando a rota segura..." className="rounded-full bg-white px-5 py-2.5 shadow-cartao" />
+              </div>
+            )}
+            {!rota && !carregando && (
               <div className="absolute left-1/2 top-3 z-[500] -translate-x-1/2 rounded-full bg-white/95 shadow px-4 py-1.5 text-xs text-slate-700">
                 Clique no mapa: 1º clique = origem, 2º clique = destino
               </div>

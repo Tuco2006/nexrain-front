@@ -25,7 +25,7 @@ async function chamar<T>(caminho: string, opcoes?: RequestInit): Promise<T> {
       headers: { "Content-Type": "application/json", ...(opcoes?.headers || {}) },
     });
   } catch {
-    throw new Error("Não foi possível falar com a API. Se ela estiver no Render, aguarde cerca de 1 minuto e tente de novo.");
+    throw new Error("Não foi possível conectar ao servidor. Tente novamente em instantes.");
   }
 
   if (!resposta.ok) {
@@ -44,7 +44,6 @@ const enviar = (metodo: string, corpo?: unknown): RequestInit => ({
   body: corpo === undefined ? undefined : JSON.stringify(corpo),
 });
 
-// painel e mapa
 export const buscarPainel = () => chamar<PainelResumo>("/api/painel");
 export const buscarRiscos = (simulacao: boolean) => chamar<RiscoRegiao[]>(`/api/riscos?simulacao=${simulacao}`);
 export const buscarClima = (latitude: number, longitude: number) =>
@@ -52,15 +51,12 @@ export const buscarClima = (latitude: number, longitude: number) =>
 export const geocodificar = (endereco: string) =>
   chamar<LocalEncontrado[]>(`/api/geocodificacao?endereco=${encodeURIComponent(endereco)}`);
 
-// regioes e cameras
 export const buscarRegioes = () => chamar<Regiao[]>("/api/regioes");
 export const buscarCameras = () => chamar<Camera[]>("/api/cameras");
 
-// monitoramento por IA
 export const analisarImagem = (entrada: EntradaAnaliseImagem) =>
   chamar<ResultadoAnaliseImagem>("/api/monitoramento/analises", enviar("POST", entrada));
 
-// ocorrencias
 export const buscarOcorrencias = (filtro?: string) =>
   chamar<Ocorrencia[]>(`/api/ocorrencias${filtro ? `?${filtro}` : ""}`);
 export const criarOcorrencia = (ocorrencia: Partial<Ocorrencia>) =>
@@ -69,7 +65,6 @@ export const validarOcorrencia = (id: number, acao: "CONFIRMAR" | "DESCARTAR" | 
   chamar<Ocorrencia>(`/api/ocorrencias/${id}/validacao`, enviar("PUT", { acao, responsavel }));
 export const excluirOcorrencia = (id: number) => chamar<void>(`/api/ocorrencias/${id}`, enviar("DELETE"));
 
-// alertas
 export const buscarAlertas = (vigentes: boolean) => chamar<Alerta[]>(`/api/alertas?vigentes=${vigentes}`);
 export const criarAlerta = (alerta: Partial<Alerta>) => chamar<Alerta>("/api/alertas", enviar("POST", alerta));
 export const atualizarAlerta = (alerta: Alerta) => chamar<Alerta>(`/api/alertas/${alerta.id}`, enviar("PUT", alerta));
@@ -77,7 +72,6 @@ export const excluirAlerta = (id: number) => chamar<void>(`/api/alertas/${id}`, 
 export const gerarAlertasPrevisao = (simulacao: boolean) =>
   chamar<Alerta[]>(`/api/alertas/previsao?simulacao=${simulacao}`, enviar("POST"));
 
-// rotas
 export const calcularRota = (solicitacao: SolicitacaoRota) => chamar<ResultadoRota>("/api/rotas", enviar("POST", solicitacao));
 export const recalcularRota = (id: number) => chamar<ResultadoRota>(`/api/rotas/${id}`, enviar("PUT", {}));
 export const buscarRotas = () => chamar<Rota[]>("/api/rotas");

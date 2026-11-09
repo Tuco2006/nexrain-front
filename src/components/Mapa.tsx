@@ -13,7 +13,6 @@ interface Props {
   onPronto: (mapa: LeafletMap, L: LeafletLib) => void;
 }
 
-// mapa base (OpenStreetMap com o estilo escuro da CARTO); cada pagina desenha as proprias camadas
 export function Mapa({ className, centro = [-23.555, -46.64], zoom = 12, onPronto }: Props) {
   const elemento = useRef<HTMLDivElement>(null);
   const callback = useRef(onPronto);
@@ -28,7 +27,6 @@ export function Mapa({ className, centro = [-23.555, -46.64], zoom = 12, onPront
       if (cancelado || !elemento.current) return;
 
       mapa = L.map(elemento.current, { zoomControl: true, preferCanvas: false }).setView(centro, zoom);
-      // mapa base claro da Esri (gratuito, sem chave) + camada com os nomes das ruas
       const esri = "https://server.arcgisonline.com/ArcGIS/rest/services/Canvas";
       L.tileLayer(`${esri}/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}`, {
         attribution: 'Tiles &copy; Esri &mdash; Esri, HERE, Garmin, &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
@@ -51,8 +49,6 @@ export function Mapa({ className, centro = [-23.555, -46.64], zoom = 12, onPront
       cancelado = true;
       mapa?.remove();
     };
-    // o mapa e criado uma vez so
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return <div ref={elemento} className={className} />;

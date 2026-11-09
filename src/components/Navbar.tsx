@@ -20,7 +20,6 @@ export function Navbar() {
 
   return (
     <header className="sticky top-0 z-[1000] shadow-sm">
-      {/* faixa institucional */}
       <div className="bg-brand-900 text-[11px] text-brand-100 sm:text-xs">
         <div className="mx-auto flex max-w-7xl items-center justify-between gap-3 px-4 py-1.5 sm:px-6">
           <p className="truncate">
@@ -39,7 +38,6 @@ export function Navbar() {
         <span className="flex-[2] bg-accent-500" />
       </div>
 
-      {/* marca */}
       <div className="border-b border-ink/10 bg-white">
         <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-3 sm:px-6">
           <Link href="/" className="flex items-center gap-3" onClick={() => setMenuAberto(false)}>
@@ -86,7 +84,6 @@ export function Navbar() {
         </div>
       </div>
 
-      {/* menu principal */}
       <nav className="hidden bg-brand-700 lg:block">
         <div className="mx-auto flex max-w-7xl px-4 sm:px-6">
           {links.map((link) => {

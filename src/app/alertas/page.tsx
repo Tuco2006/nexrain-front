@@ -1,6 +1,7 @@
 "use client";
 
 import { FormEvent, useCallback, useEffect, useState } from "react";
+import { Carregando } from "@/components/Carregando";
 import { NivelBadge } from "@/components/NivelBadge";
 import { atualizarAlerta, buscarAlertas, buscarRegioes, criarAlerta, excluirAlerta } from "@/lib/api";
 import { Alerta, Nivel, Regiao } from "@/lib/types";
@@ -56,7 +57,6 @@ export default function AlertasPage() {
   async function emitir(e: FormEvent) {
     e.preventDefault();
     setErro("");
-    // horario de Sao Paulo no formato que a API espera
     const agora = new Date(new Date().toLocaleString("en-US", { timeZone: "America/Sao_Paulo" }));
     const expira = new Date(agora.getTime() + Number(horas) * 3600000);
     const iso = (d: Date) =>
@@ -120,7 +120,7 @@ export default function AlertasPage() {
           {erro && <p className="mb-4 rounded-xl border border-red-500/30 bg-red-500/10 p-3 text-sm text-red-800">{erro}</p>}
 
           {carregando ? (
-            <p className="text-sm text-slate-500">Carregando...</p>
+            <Carregando texto="Carregando alertas..." className="card w-full rounded-2xl p-6" />
           ) : alertas.length === 0 ? (
             <p className="card rounded-2xl p-6 text-sm text-slate-500">Nenhum alerta {vigentes ? "em vigor" : "registrado"}.</p>
           ) : (

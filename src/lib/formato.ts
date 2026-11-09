@@ -23,7 +23,6 @@ export const ORIGENS: Record<string, string> = {
   PREVISAO: "Previsão do tempo",
 };
 
-// a API devolve "2026-11-09T13:23:14" no horario de Sao Paulo
 export function formatarDataHora(valor: string | null | undefined) {
   if (!valor) return "-";
   const [data, hora] = valor.split("T");

@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { buscarAlertas, buscarPainel, buscarRiscos } from "@/lib/api";
 import { Alerta, PainelResumo, RiscoRegiao } from "@/lib/types";
 import { NivelBadge } from "@/components/NivelBadge";
+import { Carregando } from "@/components/Carregando";
 import { NIVEIS, haQuanto } from "@/lib/formato";
 
 const servicos = [
@@ -73,7 +74,6 @@ export default function HomePage() {
 
   return (
     <div>
-      {/* destaque */}
       <section className="ondas border-b border-ink/10">
         <div className="mx-auto grid max-w-7xl items-center gap-10 px-4 py-12 sm:px-6 lg:grid-cols-[1.15fr_1fr] lg:py-16">
           <div>
@@ -97,7 +97,6 @@ export default function HomePage() {
             </div>
           </div>
 
-          {/* situacao agora */}
           <div className="card overflow-hidden rounded-2xl">
             <div className="flex items-center justify-between bg-brand-700 px-5 py-3 text-white">
               <p className="font-titulo text-sm font-semibold">Situação agora em São Paulo</p>
@@ -105,6 +104,10 @@ export default function HomePage() {
             </div>
             {erro ? (
               <p className="p-5 text-sm text-amber-800">{erro}</p>
+            ) : !painel ? (
+              <div className="flex min-h-[220px] items-center justify-center p-5">
+                <Carregando texto="Consultando a situação da cidade..." />
+              </div>
             ) : (
               <div className="p-5">
                 <div className="grid grid-cols-3 gap-3">
@@ -136,7 +139,6 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* alertas */}
       {alertas.length > 0 && (
         <section className="border-b border-alerta/40 bg-[#fff8e1]">
           <div className="mx-auto max-w-7xl px-4 py-5 sm:px-6">
@@ -165,7 +167,6 @@ export default function HomePage() {
         </section>
       )}
 
-      {/* servicos */}
       <section className="mx-auto max-w-7xl px-4 py-14 sm:px-6">
         <span className="etiqueta-secao">Serviços ao cidadão</span>
         <h2 className="font-titulo text-2xl font-bold text-ink sm:text-3xl">O que você pode fazer aqui</h2>
@@ -185,7 +186,6 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* como funciona */}
       <section className="border-y border-ink/10 bg-white">
         <div className="mx-auto max-w-7xl px-4 py-14 sm:px-6">
           <span className="etiqueta-secao">Como funciona</span>
@@ -207,7 +207,6 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* orientacoes */}
       <section className="mx-auto max-w-7xl px-4 py-14 sm:px-6">
         <div className="grid gap-6 rounded-2xl bg-brand-700 p-8 text-white sm:p-10 lg:grid-cols-[1fr_1.3fr]">
           <div>

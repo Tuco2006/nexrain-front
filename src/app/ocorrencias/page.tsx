@@ -1,6 +1,7 @@
 "use client";
 
 import { FormEvent, useCallback, useEffect, useState } from "react";
+import { Carregando, GotaCarregando } from "@/components/Carregando";
 import { NivelBadge, StatusBadge } from "@/components/NivelBadge";
 import { buscarOcorrencias, criarOcorrencia, excluirOcorrencia, geocodificar, validarOcorrencia } from "@/lib/api";
 import { Ocorrencia } from "@/lib/types";
@@ -126,7 +127,7 @@ export default function OcorrenciasPage() {
           {aviso && <p className="mb-4 rounded-xl border border-brand-500/30 bg-brand-500/10 p-3 text-sm text-brand-700">{aviso}</p>}
 
           {carregando ? (
-            <p className="text-sm text-slate-500">Carregando...</p>
+            <Carregando texto="Carregando ocorrências..." className="card w-full rounded-2xl p-6" />
           ) : ocorrencias.length === 0 ? (
             <p className="card rounded-2xl p-6 text-sm text-slate-500">Nenhuma ocorrência neste filtro.</p>
           ) : (
@@ -205,7 +206,13 @@ export default function OcorrenciasPage() {
             </div>
             <textarea className="campo min-h-[80px]" placeholder="O que você está vendo? (opcional)" value={descricao} onChange={(e) => setDescricao(e.target.value)} maxLength={400} />
             <button className="botao" disabled={enviando}>
-              {enviando ? "Enviando..." : "Enviar relato"}
+              {enviando ? (
+              <span className="inline-flex items-center gap-2">
+                <GotaCarregando tamanho={16} className="!text-white" /> Enviando relato...
+              </span>
+            ) : (
+              "Enviar relato"
+            )}
             </button>
           </form>
         </aside>

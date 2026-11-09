@@ -1,13 +1,13 @@
 "use client";
 
 import Link from "next/link";
+import { Carregando, GotaCarregando } from "@/components/Carregando";
 import { ChangeEvent, useEffect, useState } from "react";
 import { NivelBadge } from "@/components/NivelBadge";
 import { analisarImagem, buscarCameras, geocodificar } from "@/lib/api";
 import { Camera, ResultadoAnaliseImagem } from "@/lib/types";
 import { NIVEIS } from "@/lib/formato";
 
-// imagens publicas usadas como "cameras" no prototipo (Wikimedia Commons)
 const CREDITOS = [
   "Enchente em 2005 - Felipe Fonseca (CC BY-SA 2.0)",
   "Alagamento em Coronel Fabriciano - HVL (CC BY 3.0)",
@@ -18,7 +18,6 @@ const CREDITOS = [
   "Cruzamento R. do Fico - Barão de Itararé (CC BY-SA 4.0)",
 ];
 
-// reduz a foto antes de mandar pra API (menos dados no celular e na IA)
 function reduzirImagem(arquivo: File): Promise<string> {
   return new Promise((resolve, reject) => {
     const leitor = new FileReader();
@@ -107,6 +106,7 @@ export default function MonitoramentoPage() {
   const [registrar, setRegistrar] = useState(true);
   const [resultado, setResultado] = useState<ResultadoAnaliseImagem | null>(null);
   const [carregando, setCarregando] = useState(false);
+  const [carregandoCameras, setCarregandoCameras] = useState(true);
   const [erro, setErro] = useState("");
 
   useEffect(() => {
@@ -116,7 +116,8 @@ export default function MonitoramentoPage() {
         const id = new URLSearchParams(window.location.search).get("camera");
         setSelecionada(lista.find((c) => String(c.id) === id) ?? lista.find((c) => c.status === "ATIVA") ?? null);
       })
-      .catch((e) => setErro(e.message));
+      .catch((e) => setErro(e.message))
+      .finally(() => setCarregandoCameras(false));
   }, []);
 
   async function escolherFoto(e: ChangeEvent<HTMLInputElement>) {
@@ -199,7 +200,9 @@ export default function MonitoramentoPage() {
 
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-[1fr_420px]">
         <div>
-          {modo === "camera" ? (
+          {modo === "camera" && carregandoCameras ? (
+            <Carregando texto="Conectando às câmeras da cidade..." className="card w-full rounded-2xl p-6" />
+          ) : modo === "camera" ? (
             <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
               {cameras.map((c) => {
                 const ativa = c.status === "ATIVA";
@@ -217,7 +220,6 @@ export default function MonitoramentoPage() {
                   >
                     <div className="relative aspect-video bg-white">
                       {c.urlImagem && (
-                        // eslint-disable-next-line @next/next/no-img-element
                         <img src={c.urlImagem} alt={c.nome} className="h-full w-full object-cover" loading="lazy" />
                       )}
                       <span className={`absolute left-2 top-2 rounded-full px-2 py-0.5 text-[10px] font-semibold ${ativa ? "bg-red-600 text-white" : "bg-slate-600 text-slate-800"}`}>
@@ -236,7 +238,6 @@ export default function MonitoramentoPage() {
             <div className="card rounded-2xl p-5">
               <label className="flex aspect-video cursor-pointer flex-col items-center justify-center overflow-hidden rounded-xl border-2 border-dashed border-ink/20 bg-white text-sm text-slate-500 hover:border-brand-500/50">
                 {foto ? (
-                  // eslint-disable-next-line @next/next/no-img-element
                   <img src={foto} alt="Foto enviada" className="h-full w-full object-contain" />
                 ) : (
                   <>
@@ -278,11 +279,18 @@ export default function MonitoramentoPage() {
               Registrar ocorrência se houver alagamento
             </label>
             <button className="botao mt-4 w-full" onClick={analisar} disabled={carregando}>
-              {carregando ? "Analisando imagem..." : "Analisar com IA"}
+              {carregando ? (
+                <span className="inline-flex items-center gap-2">
+                  <GotaCarregando tamanho={16} className="!text-white" /> Analisando imagem...
+                </span>
+              ) : (
+                "Analisar com IA"
+              )}
             </button>
           </div>
 
           {erro && <p className="rounded-xl border border-red-500/30 bg-red-500/10 p-3 text-sm text-red-800">{erro}</p>}
+          {carregando && <Carregando texto="A IA está analisando a imagem..." className="card w-full rounded-2xl p-6" />}
           {resultado && <ResultadoCard resultado={resultado} />}
         </aside>
       </div>

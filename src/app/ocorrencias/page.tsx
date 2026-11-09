@@ -100,8 +100,9 @@ export default function OcorrenciasPage() {
   return (
     <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6">
       <div className="mb-6">
-        <h1 className="text-2xl font-bold text-white sm:text-3xl">Ocorrências de alagamento</h1>
-        <p className="mt-2 max-w-3xl text-sm text-slate-400">
+        <span className="etiqueta-secao">Serviços NexRain</span>
+        <h1 className="titulo-pagina">Ocorrências de alagamento</h1>
+        <p className="mt-2 max-w-3xl text-sm text-slate-500">
           Registros vindos da IA das câmeras e dos relatos de cidadãos. O operador confirma ou descarta cada um; ao
           confirmar um alagamento alto ou crítico a API emite um alerta automaticamente.
         </p>
@@ -114,20 +115,20 @@ export default function OcorrenciasPage() {
               <button
                 key={f.rotulo}
                 onClick={() => setFiltro(f.valor)}
-                className={`rounded-full px-3.5 py-1.5 text-sm ${filtro === f.valor ? "bg-brand-500 text-white" : "border border-white/10 text-slate-300 hover:bg-white/5"}`}
+                className={`rounded-full px-3.5 py-1.5 text-sm ${filtro === f.valor ? "bg-brand-500 text-white" : "border border-ink/15 text-slate-700 hover:bg-brand-50"}`}
               >
                 {f.rotulo}
               </button>
             ))}
           </div>
 
-          {erro && <p className="mb-4 rounded-xl border border-red-500/30 bg-red-500/10 p-3 text-sm text-red-200">{erro}</p>}
-          {aviso && <p className="mb-4 rounded-xl border border-brand-500/30 bg-brand-500/10 p-3 text-sm text-brand-200">{aviso}</p>}
+          {erro && <p className="mb-4 rounded-xl border border-red-500/30 bg-red-500/10 p-3 text-sm text-red-800">{erro}</p>}
+          {aviso && <p className="mb-4 rounded-xl border border-brand-500/30 bg-brand-500/10 p-3 text-sm text-brand-700">{aviso}</p>}
 
           {carregando ? (
             <p className="text-sm text-slate-500">Carregando...</p>
           ) : ocorrencias.length === 0 ? (
-            <p className="card rounded-2xl p-6 text-sm text-slate-400">Nenhuma ocorrência neste filtro.</p>
+            <p className="card rounded-2xl p-6 text-sm text-slate-500">Nenhuma ocorrência neste filtro.</p>
           ) : (
             <div className="space-y-3">
               {ocorrencias.map((o) => (
@@ -139,18 +140,18 @@ export default function OcorrenciasPage() {
                         <StatusBadge status={o.status} />
                         <NivelBadge nivel={o.nivelRisco} />
                       </div>
-                      <h3 className="mt-2 font-semibold text-white">{o.endereco}</h3>
+                      <h3 className="mt-2 font-semibold text-ink">{o.endereco}</h3>
                       <p className="text-xs text-slate-500">
                         {formatarDataHora(o.dataHora)} ({haQuanto(o.dataHora)}) · {ORIGENS[o.origem]}
                         {o.confianca > 0 && ` · confiança ${Math.round(o.confianca)}%`}
                       </p>
                     </div>
                     <div className="text-right">
-                      <p className="text-2xl font-bold text-white">{o.nivelAguaCm} cm</p>
+                      <p className="text-2xl font-bold text-ink">{o.nivelAguaCm} cm</p>
                       <p className="text-xs text-slate-500">de água</p>
                     </div>
                   </div>
-                  {o.descricao && <p className="mt-3 text-sm text-slate-300">{o.descricao}</p>}
+                  {o.descricao && <p className="mt-3 text-sm text-slate-700">{o.descricao}</p>}
                   {o.validadoPor && (
                     <p className="mt-2 text-xs text-slate-500">
                       Validado por {o.validadoPor} em {formatarDataHora(o.dataValidacao)}
@@ -172,7 +173,7 @@ export default function OcorrenciasPage() {
                         Marcar como resolvida
                       </button>
                     )}
-                    <button className="ml-auto rounded-lg px-3 py-1.5 text-xs text-red-300 hover:bg-white/5" onClick={() => excluir(o)}>
+                    <button className="ml-auto rounded-lg px-3 py-1.5 text-xs text-red-700 hover:bg-brand-50" onClick={() => excluir(o)}>
                       Excluir
                     </button>
                   </div>
@@ -184,17 +185,17 @@ export default function OcorrenciasPage() {
 
         <aside className="flex flex-col gap-4">
           <div className="card rounded-2xl p-5">
-            <label className="text-xs font-medium text-slate-400">Operador responsável pela validação</label>
+            <label className="text-xs font-medium text-slate-500">Operador responsável pela validação</label>
             <input className="campo mt-1" value={responsavel} onChange={(e) => setResponsavel(e.target.value)} />
           </div>
 
           <form onSubmit={relatar} className="card flex flex-col gap-3 rounded-2xl p-5">
-            <h2 className="font-semibold text-white">Relatar alagamento</h2>
+            <h2 className="font-semibold text-ink">Relatar alagamento</h2>
             <p className="text-xs text-slate-500">Canal do cidadão. A região é definida automaticamente pela localização.</p>
             <input className="campo" placeholder="Endereço (ex: Av. do Estado, Cambuci)" value={endereco} onChange={(e) => setEndereco(e.target.value)} required />
             <div>
-              <label className="text-xs text-slate-400">Altura aproximada da água: {nivelAgua} cm</label>
-              <input type="range" min={0} max={100} step={5} value={nivelAgua} onChange={(e) => setNivelAgua(e.target.value)} className="w-full accent-sky-500" />
+              <label className="text-xs text-slate-500">Altura aproximada da água: {nivelAgua} cm</label>
+              <input type="range" min={0} max={100} step={5} value={nivelAgua} onChange={(e) => setNivelAgua(e.target.value)} className="w-full accent-teal-600" />
               <div className="flex justify-between text-[10px] text-slate-500">
                 <span>poças</span>
                 <span>guia (15)</span>

@@ -48,35 +48,35 @@ function ResultadoCard({ resultado }: { resultado: ResultadoAnaliseImagem }) {
   return (
     <div className="card rounded-2xl p-6">
       <div className="flex flex-wrap items-center justify-between gap-2">
-        <h2 className="text-lg font-semibold text-white">{a.alagamentoDetectado ? "🌊 Alagamento detectado" : "✅ Via sem alagamento"}</h2>
-        <span className="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs text-slate-300">
+        <h2 className="text-lg font-semibold text-ink">{a.alagamentoDetectado ? "🌊 Alagamento detectado" : "✅ Via sem alagamento"}</h2>
+        <span className="rounded-full border border-ink/15 bg-brand-50 px-3 py-1 text-xs text-slate-700">
           {resultado.origemAnalise === "openai" ? "IA OpenAI (GPT-4o-mini Vision)" : "Motor local de visão computacional"}
         </span>
       </div>
 
       <div className="mt-5 grid gap-5 sm:grid-cols-[120px_1fr]">
         <div className="flex flex-col items-center">
-          <div className="relative h-40 w-16 overflow-hidden rounded-xl border border-white/10 bg-base-900">
+          <div className="relative h-40 w-16 overflow-hidden rounded-xl border border-ink/15 bg-white">
             <div className="absolute bottom-0 w-full transition-all duration-700" style={{ height: `${nivelVisual}%`, backgroundColor: cor, opacity: 0.7 }} />
             {[15, 30, 50].map((cm) => (
-              <div key={cm} className="absolute w-full border-t border-dashed border-white/20 text-[9px] text-slate-400" style={{ bottom: `${(cm / 80) * 100}%` }}>
+              <div key={cm} className="absolute w-full border-t border-dashed border-ink/25 text-[9px] text-slate-500" style={{ bottom: `${(cm / 80) * 100}%` }}>
                 <span className="pl-1">{cm}</span>
               </div>
             ))}
           </div>
-          <p className="mt-2 text-2xl font-bold text-white">{a.nivelAguaEstimadoCm} cm</p>
+          <p className="mt-2 text-2xl font-bold text-ink">{a.nivelAguaEstimadoCm} cm</p>
           <p className="text-xs text-slate-500">altura estimada</p>
         </div>
 
         <div className="space-y-3">
           <div className="flex flex-wrap gap-2">
             <NivelBadge nivel={a.nivelRisco} />
-            <span className={`rounded-full border px-2.5 py-0.5 text-xs font-semibold ${a.viaTransitavel ? "border-emerald-500/30 text-emerald-300" : "border-red-500/30 text-red-300"}`}>
+            <span className={`rounded-full border px-2.5 py-0.5 text-xs font-semibold ${a.viaTransitavel ? "border-emerald-500/30 text-emerald-700" : "border-red-500/30 text-red-700"}`}>
               {a.viaTransitavel ? "Via transitável" : "Via intransitável"}
             </span>
           </div>
           <div>
-            <div className="flex justify-between text-xs text-slate-400">
+            <div className="flex justify-between text-xs text-slate-500">
               <span>Confiança da análise</span>
               <span>{Math.round(a.confianca)}%</span>
             </div>
@@ -84,10 +84,10 @@ function ResultadoCard({ resultado }: { resultado: ResultadoAnaliseImagem }) {
               <div className="h-2 rounded-full bg-gradient-to-r from-brand-500 to-accent-500" style={{ width: `${a.confianca}%` }} />
             </div>
           </div>
-          <p className="text-sm text-slate-300">{a.descricao}</p>
-          <p className="rounded-lg bg-white/5 p-3 text-sm text-slate-200">{resultado.mensagem}</p>
+          <p className="text-sm text-slate-700">{a.descricao}</p>
+          <p className="rounded-lg bg-brand-50 p-3 text-sm text-slate-800">{resultado.mensagem}</p>
           {resultado.ocorrencia && (
-            <Link href="/ocorrencias" className="inline-block text-sm text-brand-300 hover:underline">
+            <Link href="/ocorrencias" className="inline-block text-sm text-brand-700 hover:underline">
               Ir para a validação da ocorrência #{resultado.ocorrencia.id} →
             </Link>
           )}
@@ -179,19 +179,20 @@ export default function MonitoramentoPage() {
   return (
     <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6">
       <div className="mb-6">
-        <h1 className="text-2xl font-bold text-white sm:text-3xl">Monitoramento por IA</h1>
-        <p className="mt-2 max-w-3xl text-sm text-slate-400">
+        <span className="etiqueta-secao">Serviços NexRain</span>
+        <h1 className="titulo-pagina">Monitoramento por IA</h1>
+        <p className="mt-2 max-w-3xl text-sm text-slate-500">
           A API envia a imagem da câmera para o modelo de visão computacional, que estima a altura da água e o risco
           para quem passa pela via. Se houver alagamento, a ocorrência é registrada com local, horário e nível de risco
           e fica aguardando validação da Defesa Civil.
         </p>
       </div>
 
-      <div className="mb-5 flex w-fit rounded-lg border border-white/10 bg-white/5 p-1 text-sm">
-        <button onClick={() => setModo("camera")} className={`rounded-md px-4 py-1.5 ${modo === "camera" ? "bg-brand-500 text-white" : "text-slate-300"}`}>
+      <div className="mb-5 flex w-fit rounded-lg border border-ink/15 bg-brand-50 p-1 text-sm">
+        <button onClick={() => setModo("camera")} className={`rounded-md px-4 py-1.5 ${modo === "camera" ? "bg-brand-500 text-white" : "text-slate-700"}`}>
           Câmeras da cidade
         </button>
-        <button onClick={() => setModo("foto")} className={`rounded-md px-4 py-1.5 ${modo === "foto" ? "bg-brand-500 text-white" : "text-slate-300"}`}>
+        <button onClick={() => setModo("foto")} className={`rounded-md px-4 py-1.5 ${modo === "foto" ? "bg-brand-500 text-white" : "text-slate-700"}`}>
           Enviar foto (cidadão)
         </button>
       </div>
@@ -211,20 +212,20 @@ export default function MonitoramentoPage() {
                       setResultado(null);
                     }}
                     className={`card overflow-hidden rounded-2xl text-left transition-all ${
-                      selecionada?.id === c.id ? "ring-2 ring-brand-400" : "hover:border-white/25"
+                      selecionada?.id === c.id ? "ring-2 ring-brand-600" : "hover:border-ink/30"
                     } ${!ativa ? "opacity-50" : ""}`}
                   >
-                    <div className="relative aspect-video bg-base-900">
+                    <div className="relative aspect-video bg-white">
                       {c.urlImagem && (
                         // eslint-disable-next-line @next/next/no-img-element
                         <img src={c.urlImagem} alt={c.nome} className="h-full w-full object-cover" loading="lazy" />
                       )}
-                      <span className={`absolute left-2 top-2 rounded-full px-2 py-0.5 text-[10px] font-semibold ${ativa ? "bg-red-600 text-white" : "bg-slate-600 text-slate-200"}`}>
+                      <span className={`absolute left-2 top-2 rounded-full px-2 py-0.5 text-[10px] font-semibold ${ativa ? "bg-red-600 text-white" : "bg-slate-600 text-slate-800"}`}>
                         {ativa ? "● AO VIVO" : c.status === "MANUTENCAO" ? "MANUTENÇÃO" : "INATIVA"}
                       </span>
                     </div>
                     <div className="p-3">
-                      <p className="text-sm font-semibold text-white">{c.nome}</p>
+                      <p className="text-sm font-semibold text-ink">{c.nome}</p>
                       <p className="text-xs text-slate-500">{c.endereco}</p>
                     </div>
                   </button>
@@ -233,7 +234,7 @@ export default function MonitoramentoPage() {
             </div>
           ) : (
             <div className="card rounded-2xl p-5">
-              <label className="flex aspect-video cursor-pointer flex-col items-center justify-center overflow-hidden rounded-xl border-2 border-dashed border-white/15 bg-base-900 text-sm text-slate-400 hover:border-brand-500/50">
+              <label className="flex aspect-video cursor-pointer flex-col items-center justify-center overflow-hidden rounded-xl border-2 border-dashed border-ink/20 bg-white text-sm text-slate-500 hover:border-brand-500/50">
                 {foto ? (
                   // eslint-disable-next-line @next/next/no-img-element
                   <img src={foto} alt="Foto enviada" className="h-full w-full object-contain" />
@@ -251,13 +252,13 @@ export default function MonitoramentoPage() {
                 <button className="botao-sec shrink-0" onClick={usarMinhaLocalizacao} title="Usar GPS">📍</button>
               </div>
               {local && (
-                <p className="mt-2 text-xs text-brand-300">
+                <p className="mt-2 text-xs text-brand-700">
                   Local: {local.nome} ({local.latitude.toFixed(4)}, {local.longitude.toFixed(4)})
                 </p>
               )}
             </div>
           )}
-          <p className="mt-4 text-[11px] leading-relaxed text-slate-600">
+          <p className="mt-4 text-[11px] leading-relaxed text-slate-500">
             Imagens de demonstração: Wikimedia Commons - {CREDITOS.join(" · ")}.
           </p>
         </div>
@@ -267,13 +268,13 @@ export default function MonitoramentoPage() {
             {modo === "camera" && selecionada && (
               <>
                 <p className="text-xs uppercase tracking-wider text-slate-500">Câmera selecionada</p>
-                <p className="mt-1 font-semibold text-white">{selecionada.nome}</p>
-                <p className="text-sm text-slate-400">{selecionada.endereco}</p>
+                <p className="mt-1 font-semibold text-ink">{selecionada.nome}</p>
+                <p className="text-sm text-slate-500">{selecionada.endereco}</p>
               </>
             )}
-            {modo === "foto" && <p className="text-sm text-slate-400">A foto é analisada pela mesma IA das câmeras.</p>}
-            <label className="mt-4 flex items-center gap-2 text-sm text-slate-300">
-              <input type="checkbox" checked={registrar} onChange={(e) => setRegistrar(e.target.checked)} className="accent-sky-500" />
+            {modo === "foto" && <p className="text-sm text-slate-500">A foto é analisada pela mesma IA das câmeras.</p>}
+            <label className="mt-4 flex items-center gap-2 text-sm text-slate-700">
+              <input type="checkbox" checked={registrar} onChange={(e) => setRegistrar(e.target.checked)} className="accent-teal-600" />
               Registrar ocorrência se houver alagamento
             </label>
             <button className="botao mt-4 w-full" onClick={analisar} disabled={carregando}>
@@ -281,7 +282,7 @@ export default function MonitoramentoPage() {
             </button>
           </div>
 
-          {erro && <p className="rounded-xl border border-red-500/30 bg-red-500/10 p-3 text-sm text-red-200">{erro}</p>}
+          {erro && <p className="rounded-xl border border-red-500/30 bg-red-500/10 p-3 text-sm text-red-800">{erro}</p>}
           {resultado && <ResultadoCard resultado={resultado} />}
         </aside>
       </div>

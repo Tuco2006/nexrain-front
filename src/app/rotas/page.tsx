@@ -11,9 +11,9 @@ import { NIVEIS, escapar, formatarDataHora } from "@/lib/formato";
 const RAIO_OCORRENCIA: Record<string, number> = { CRITICO: 300, ALTO: 200, MEDIO: 120, BAIXO: 60 };
 
 const SITUACAO = {
-  SEGURA: { texto: "Rota segura", classe: "border-emerald-500/30 bg-emerald-500/10 text-emerald-200" },
-  RISCO_REDUZIDO: { texto: "Risco reduzido", classe: "border-amber-500/30 bg-amber-500/10 text-amber-200" },
-  COM_RISCO: { texto: "Rota com risco", classe: "border-red-500/30 bg-red-500/10 text-red-200" },
+  SEGURA: { texto: "Rota segura", classe: "border-emerald-500/30 bg-emerald-500/10 text-emerald-800" },
+  RISCO_REDUZIDO: { texto: "Risco reduzido", classe: "border-amber-500/30 bg-amber-500/10 text-amber-800" },
+  COM_RISCO: { texto: "Rota com risco", classe: "border-red-500/30 bg-red-500/10 text-red-800" },
 };
 
 const EXEMPLOS = [
@@ -46,7 +46,7 @@ function CampoEndereco({ rotulo, ponto, onChange, cor }: { rotulo: string; ponto
 
   return (
     <div className="relative">
-      <label className="mb-1 flex items-center gap-2 text-xs font-medium text-slate-400">
+      <label className="mb-1 flex items-center gap-2 text-xs font-medium text-slate-500">
         <span className="h-2.5 w-2.5 rounded-full" style={{ backgroundColor: cor }} />
         {rotulo}
         {ponto.latitude !== undefined && <span className="text-[10px] text-slate-500">(ponto definido)</span>}
@@ -69,12 +69,12 @@ function CampoEndereco({ rotulo, ponto, onChange, cor }: { rotulo: string; ponto
         </button>
       </div>
       {sugestoes.length > 0 && (
-        <div className="absolute z-[1100] mt-1 w-full overflow-hidden rounded-lg border border-white/10 bg-base-800 shadow-xl">
+        <div className="absolute z-[1100] mt-1 w-full overflow-hidden rounded-lg border border-ink/15 bg-white shadow-xl">
           {sugestoes.map((s) => (
             <button
               type="button"
               key={`${s.latitude}${s.longitude}`}
-              className="block w-full px-3 py-2 text-left text-xs text-slate-200 hover:bg-white/10"
+              className="block w-full px-3 py-2 text-left text-xs text-slate-800 hover:bg-brand-50"
               onClick={() => {
                 onChange({ texto: s.nome.split(",").slice(0, 3).join(","), latitude: s.latitude, longitude: s.longitude });
                 setSugestoes([]);
@@ -152,8 +152,8 @@ export default function RotasPage() {
     camadaRota.current?.remove();
     const grupo = L.layerGroup();
     [
-      { p: origem, letra: "A", cor: "#38bdf8" },
-      { p: destino, letra: "B", cor: "#a5b4fc" },
+      { p: origem, letra: "A", cor: "#136f93" },
+      { p: destino, letra: "B", cor: "#7c3aed" },
     ].forEach(({ p, letra, cor }) => {
       if (p.latitude !== undefined && p.longitude !== undefined) {
         L.marker([p.latitude, p.longitude], {
@@ -178,14 +178,14 @@ export default function RotasPage() {
         .bindTooltip("Rota mais rápida (passa por alagamento)")
         .addTo(grupo);
     }
-    L.polyline(linha(rota.trajeto), { color: "#04080f", weight: 9, opacity: 0.8 }).addTo(grupo);
-    const segura = L.polyline(linha(rota.trajeto), { color: rota.situacao === "SEGURA" ? "#22d3ee" : "#f59e0b", weight: 5 })
+    L.polyline(linha(rota.trajeto), { color: "#ffffff", weight: 10, opacity: 0.95 }).addTo(grupo);
+    const segura = L.polyline(linha(rota.trajeto), { color: rota.situacao === "SEGURA" ? "#0b7a70" : "#d97706", weight: 5 })
       .bindTooltip("Rota NexRain")
       .addTo(grupo);
 
     [
-      { lat: rota.origemLat, lon: rota.origemLon, letra: "A", cor: "#38bdf8", nome: rota.origem },
-      { lat: rota.destinoLat, lon: rota.destinoLon, letra: "B", cor: "#a5b4fc", nome: rota.destino },
+      { lat: rota.origemLat, lon: rota.origemLon, letra: "A", cor: "#136f93", nome: rota.origem },
+      { lat: rota.destinoLat, lon: rota.destinoLon, letra: "B", cor: "#7c3aed", nome: rota.destino },
     ].forEach((m) =>
       L.marker([m.lat, m.lon], {
         icon: L.divIcon({ className: "", html: `<div class="marcador-rota" style="width:26px;height:26px;background:${m.cor}">${m.letra}</div>`, iconSize: [26, 26], iconAnchor: [13, 13] }),
@@ -275,8 +275,9 @@ export default function RotasPage() {
   return (
     <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6">
       <div className="mb-6">
-        <h1 className="text-2xl font-bold text-white sm:text-3xl">Rota segura</h1>
-        <p className="mt-2 max-w-3xl text-sm text-slate-400">
+        <span className="etiqueta-secao">Serviços NexRain</span>
+        <h1 className="titulo-pagina">Rota segura</h1>
+        <p className="mt-2 max-w-3xl text-sm text-slate-500">
           O algoritmo da API pede ao OSRM a rota mais rápida e as alternativas, descarta as que passam no raio de um
           alagamento ativo e, se precisar, cria pontos de desvio dos dois lados da rua alagada até achar um caminho seguro.
         </p>
@@ -285,8 +286,8 @@ export default function RotasPage() {
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-[360px_1fr]">
         <aside className="flex flex-col gap-4">
           <form onSubmit={calcular} className="card flex flex-col gap-4 rounded-2xl p-5">
-            <CampoEndereco rotulo="Origem" ponto={origem} onChange={setOrigem} cor="#38bdf8" />
-            <CampoEndereco rotulo="Destino" ponto={destino} onChange={setDestino} cor="#a5b4fc" />
+            <CampoEndereco rotulo="Origem" ponto={origem} onChange={setOrigem} cor="#136f93" />
+            <CampoEndereco rotulo="Destino" ponto={destino} onChange={setDestino} cor="#7c3aed" />
             <div className="flex gap-2">
               <button className="botao flex-1" disabled={carregando || !origem.texto || !destino.texto}>
                 {carregando ? "Calculando..." : "Calcular rota segura"}
@@ -299,7 +300,7 @@ export default function RotasPage() {
               <p className="mb-2 text-xs text-slate-500">Exemplos que passam por alagamentos:</p>
               <div className="flex flex-wrap gap-2">
                 {EXEMPLOS.map((ex) => (
-                  <button key={ex.nome} type="button" className="rounded-full border border-white/10 px-3 py-1 text-xs text-slate-300 hover:bg-white/10" onClick={() => usarExemplo(ex)}>
+                  <button key={ex.nome} type="button" className="rounded-full border border-ink/15 px-3 py-1 text-xs text-slate-700 hover:bg-brand-50" onClick={() => usarExemplo(ex)}>
                     {ex.nome}
                   </button>
                 ))}
@@ -307,27 +308,27 @@ export default function RotasPage() {
             </div>
           </form>
 
-          {erro && <p className="rounded-xl border border-red-500/30 bg-red-500/10 p-3 text-sm text-red-200">{erro}</p>}
+          {erro && <p className="rounded-xl border border-red-500/30 bg-red-500/10 p-3 text-sm text-red-800">{erro}</p>}
 
           {rota && (
             <div className="card rounded-2xl p-5">
               <div className={`rounded-lg border px-3 py-2 text-sm font-semibold ${SITUACAO[rota.situacao].classe}`}>{SITUACAO[rota.situacao].texto}</div>
-              <p className="mt-3 text-sm text-slate-300">{resultado?.mensagem}</p>
+              <p className="mt-3 text-sm text-slate-700">{resultado?.mensagem}</p>
               <div className="mt-4 grid grid-cols-2 gap-3 text-center">
-                <div className="rounded-xl bg-white/5 p-3">
-                  <p className="text-2xl font-bold text-white">{rota.distanciaKm} km</p>
+                <div className="rounded-xl bg-brand-50 p-3">
+                  <p className="text-2xl font-bold text-ink">{rota.distanciaKm} km</p>
                   <p className="text-xs text-slate-500">direta: {rota.distanciaDiretaKm} km</p>
                 </div>
-                <div className="rounded-xl bg-white/5 p-3">
-                  <p className="text-2xl font-bold text-white">{Math.round(rota.duracaoMin)} min</p>
+                <div className="rounded-xl bg-brand-50 p-3">
+                  <p className="text-2xl font-bold text-ink">{Math.round(rota.duracaoMin)} min</p>
                   <p className="text-xs text-slate-500">+{rota.minutosExtras} min de desvio</p>
                 </div>
-                <div className="rounded-xl bg-white/5 p-3">
-                  <p className="text-2xl font-bold text-emerald-300">{rota.alagamentosEvitados}</p>
+                <div className="rounded-xl bg-brand-50 p-3">
+                  <p className="text-2xl font-bold text-emerald-700">{rota.alagamentosEvitados}</p>
                   <p className="text-xs text-slate-500">alagamentos evitados</p>
                 </div>
-                <div className="rounded-xl bg-white/5 p-3">
-                  <p className={`text-2xl font-bold ${rota.alagamentosNoTrajeto ? "text-red-300" : "text-white"}`}>{rota.alagamentosNoTrajeto}</p>
+                <div className="rounded-xl bg-brand-50 p-3">
+                  <p className={`text-2xl font-bold ${rota.alagamentosNoTrajeto ? "text-red-700" : "text-ink"}`}>{rota.alagamentosNoTrajeto}</p>
                   <p className="text-xs text-slate-500">no trajeto escolhido</p>
                 </div>
               </div>
@@ -336,7 +337,7 @@ export default function RotasPage() {
                   <p className="text-xs text-slate-500">A rota mais rápida passaria por:</p>
                   <ul className="mt-2 space-y-1.5">
                     {resultado.alagamentosNoCaminhoDireto.map((o) => (
-                      <li key={o.id} className="flex items-center justify-between gap-2 text-xs text-slate-300">
+                      <li key={o.id} className="flex items-center justify-between gap-2 text-xs text-slate-700">
                         <span className="truncate">{o.endereco}</span>
                         <NivelBadge nivel={o.nivelRisco} prefixo="" />
                       </li>
@@ -347,8 +348,8 @@ export default function RotasPage() {
               {resultado && resultado.alternativasAvaliadas > 0 && (
                 <p className="mt-4 text-xs text-slate-500">{resultado.alternativasAvaliadas} caminhos avaliados pelo algoritmo · rota #{rota.id}</p>
               )}
-              <div className="mt-3 flex gap-3 text-xs text-slate-400">
-                <span className="flex items-center gap-1.5"><span className="h-1 w-5 rounded bg-cyan-400" /> NexRain</span>
+              <div className="mt-3 flex gap-3 text-xs text-slate-500">
+                <span className="flex items-center gap-1.5"><span className="h-1 w-5 rounded bg-brand-600" /> NexRain</span>
                 <span className="flex items-center gap-1.5"><span className="h-1 w-5 rounded bg-red-500" /> mais rápida</span>
               </div>
             </div>
@@ -359,14 +360,14 @@ export default function RotasPage() {
           <div className="card relative overflow-hidden rounded-2xl">
             <Mapa className="h-[62vh] min-h-[400px] w-full" onPronto={aoCriarMapa} />
             {!rota && (
-              <div className="absolute left-1/2 top-3 z-[500] -translate-x-1/2 rounded-full bg-base-900/90 px-4 py-1.5 text-xs text-slate-300">
+              <div className="absolute left-1/2 top-3 z-[500] -translate-x-1/2 rounded-full bg-white/95 shadow px-4 py-1.5 text-xs text-slate-700">
                 Clique no mapa: 1º clique = origem, 2º clique = destino
               </div>
             )}
           </div>
 
           <div className="card rounded-2xl p-5">
-            <h2 className="font-semibold text-white">Histórico de rotas</h2>
+            <h2 className="font-semibold text-ink">Histórico de rotas</h2>
             {historico.length === 0 ? (
               <p className="mt-2 text-sm text-slate-500">Nenhuma rota calculada ainda.</p>
             ) : (
@@ -384,7 +385,7 @@ export default function RotasPage() {
                   </thead>
                   <tbody>
                     {historico.slice(0, 8).map((h) => (
-                      <tr key={h.id} className="border-t border-white/5 text-slate-300">
+                      <tr key={h.id} className="border-t border-ink/10 text-slate-700">
                         <td className="py-2">{h.id}</td>
                         <td className="max-w-[260px] truncate py-2">
                           {h.origem.split(",")[0]} → {h.destino.split(",")[0]}
@@ -394,9 +395,9 @@ export default function RotasPage() {
                         <td className="py-2 text-xs">{formatarDataHora(h.dataCalculo)}</td>
                         <td className="py-2 text-right">
                           <div className="flex justify-end gap-1">
-                            <button className="rounded px-2 py-1 text-xs text-brand-300 hover:bg-white/10" onClick={() => abrirHistorico(h.id)}>Ver</button>
-                            <button className="rounded px-2 py-1 text-xs text-brand-300 hover:bg-white/10" onClick={() => recalcular(h.id)}>Recalcular</button>
-                            <button className="rounded px-2 py-1 text-xs text-red-300 hover:bg-white/10" onClick={() => excluir(h.id)}>Excluir</button>
+                            <button className="rounded px-2 py-1 text-xs text-brand-700 hover:bg-brand-50" onClick={() => abrirHistorico(h.id)}>Ver</button>
+                            <button className="rounded px-2 py-1 text-xs text-brand-700 hover:bg-brand-50" onClick={() => recalcular(h.id)}>Recalcular</button>
+                            <button className="rounded px-2 py-1 text-xs text-red-700 hover:bg-brand-50" onClick={() => excluir(h.id)}>Excluir</button>
                           </div>
                         </td>
                       </tr>

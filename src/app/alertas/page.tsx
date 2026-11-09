@@ -98,8 +98,9 @@ export default function AlertasPage() {
   return (
     <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6">
       <div className="mb-6">
-        <h1 className="text-2xl font-bold text-white sm:text-3xl">Alertas aos cidadãos</h1>
-        <p className="mt-2 max-w-3xl text-sm text-slate-400">
+        <span className="etiqueta-secao">Serviços NexRain</span>
+        <h1 className="titulo-pagina">Alertas aos cidadãos</h1>
+        <p className="mt-2 max-w-3xl text-sm text-slate-500">
           Alertas gerados automaticamente por ocorrências confirmadas e pela previsão de chuva forte, além dos alertas
           manuais da Defesa Civil.
         </p>
@@ -108,20 +109,20 @@ export default function AlertasPage() {
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-[1fr_340px]">
         <div>
           <div className="mb-4 flex gap-2">
-            <button onClick={() => setVigentes(true)} className={`rounded-full px-3.5 py-1.5 text-sm ${vigentes ? "bg-brand-500 text-white" : "border border-white/10 text-slate-300"}`}>
+            <button onClick={() => setVigentes(true)} className={`rounded-full px-3.5 py-1.5 text-sm ${vigentes ? "bg-brand-500 text-white" : "border border-ink/15 text-slate-700"}`}>
               Em vigor
             </button>
-            <button onClick={() => setVigentes(false)} className={`rounded-full px-3.5 py-1.5 text-sm ${!vigentes ? "bg-brand-500 text-white" : "border border-white/10 text-slate-300"}`}>
+            <button onClick={() => setVigentes(false)} className={`rounded-full px-3.5 py-1.5 text-sm ${!vigentes ? "bg-brand-500 text-white" : "border border-ink/15 text-slate-700"}`}>
               Histórico completo
             </button>
           </div>
 
-          {erro && <p className="mb-4 rounded-xl border border-red-500/30 bg-red-500/10 p-3 text-sm text-red-200">{erro}</p>}
+          {erro && <p className="mb-4 rounded-xl border border-red-500/30 bg-red-500/10 p-3 text-sm text-red-800">{erro}</p>}
 
           {carregando ? (
             <p className="text-sm text-slate-500">Carregando...</p>
           ) : alertas.length === 0 ? (
-            <p className="card rounded-2xl p-6 text-sm text-slate-400">Nenhum alerta {vigentes ? "em vigor" : "registrado"}.</p>
+            <p className="card rounded-2xl p-6 text-sm text-slate-500">Nenhum alerta {vigentes ? "em vigor" : "registrado"}.</p>
           ) : (
             <div className="space-y-3">
               {alertas.map((a) => (
@@ -135,18 +136,18 @@ export default function AlertasPage() {
                     </div>
                     <span className="text-xs text-slate-500">{haQuanto(a.dataEmissao)}</span>
                   </div>
-                  <h3 className="mt-2 font-semibold text-white">{a.titulo}</h3>
-                  <p className="mt-1 text-sm text-slate-300">{a.mensagem}</p>
+                  <h3 className="mt-2 font-semibold text-ink">{a.titulo}</h3>
+                  <p className="mt-1 text-sm text-slate-700">{a.mensagem}</p>
                   <div className="mt-3 flex flex-wrap items-center justify-between gap-2 text-xs text-slate-500">
                     <span>
                       Emitido {formatarDataHora(a.dataEmissao)} · expira {formatarDataHora(a.dataExpiracao)}
                       {!a.ativo && " · encerrado"}
                     </span>
                     <div className="flex gap-1">
-                      <button className="rounded px-2 py-1 text-brand-300 hover:bg-white/10" onClick={() => alternar(a)}>
+                      <button className="rounded px-2 py-1 text-brand-700 hover:bg-brand-50" onClick={() => alternar(a)}>
                         {a.ativo ? "Encerrar" : "Reativar"}
                       </button>
-                      <button className="rounded px-2 py-1 text-red-300 hover:bg-white/10" onClick={() => excluir(a)}>
+                      <button className="rounded px-2 py-1 text-red-700 hover:bg-brand-50" onClick={() => excluir(a)}>
                         Excluir
                       </button>
                     </div>
@@ -158,7 +159,7 @@ export default function AlertasPage() {
         </div>
 
         <form onSubmit={emitir} className="card flex h-fit flex-col gap-3 rounded-2xl p-5">
-          <h2 className="font-semibold text-white">Emitir alerta manual</h2>
+          <h2 className="font-semibold text-ink">Emitir alerta manual</h2>
           <select className="campo" value={idRegiao} onChange={(e) => setIdRegiao(e.target.value)}>
             {regioes.map((r) => (
               <option key={r.id} value={r.id}>

@@ -17,7 +17,7 @@ function graficoChuva(previsao: PrevisaoClima) {
     .map((h) => {
       const altura = Math.max(2, (h.precipitacaoMm / maximo) * 48);
       return `<div title="${h.hora.slice(11, 16)} - ${h.precipitacaoMm} mm (${h.probabilidade}%)" style="flex:1;display:flex;flex-direction:column;align-items:center;gap:2px">
-        <div style="height:48px;display:flex;align-items:flex-end;width:100%"><div style="width:100%;height:${altura}px;background:#38bdf8;border-radius:2px;opacity:${0.35 + h.probabilidade / 160}"></div></div>
+        <div style="height:48px;display:flex;align-items:flex-end;width:100%"><div style="width:100%;height:${altura}px;background:#0f9488;border-radius:2px;opacity:${0.35 + h.probabilidade / 160}"></div></div>
         <span style="font-size:9px;color:#64748b">${h.hora.slice(11, 13)}h</span></div>`;
     })
     .join("");
@@ -156,7 +156,7 @@ export default function MapaPage() {
       }).addTo(grupo);
       L.circleMarker([o.latitude, o.longitude], {
         radius: 8,
-        color: "#04080f",
+        color: "#ffffff",
         weight: 2,
         fillColor: cor,
         fillOpacity: 1,
@@ -184,7 +184,7 @@ export default function MapaPage() {
     cameras.forEach((c) => {
       const icone = L.divIcon({
         className: "",
-        html: `<div style="width:22px;height:22px;border-radius:6px;background:${c.status === "ATIVA" ? "#0ea5e9" : "#475569"};border:2px solid #04080f;display:flex;align-items:center;justify-content:center;font-size:12px">📷</div>`,
+        html: `<div style="width:22px;height:22px;border-radius:6px;background:${c.status === "ATIVA" ? "#0b7a70" : "#64748b"};border:2px solid #ffffff;box-shadow:0 1px 4px rgba(0,0,0,.35);display:flex;align-items:center;justify-content:center;font-size:12px">📷</div>`,
         iconSize: [22, 22],
         iconAnchor: [11, 11],
       });
@@ -220,23 +220,24 @@ export default function MapaPage() {
     <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6">
       <div className="mb-6 flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-white sm:text-3xl">Mapa de risco de alagamento</h1>
-          <p className="mt-2 max-w-2xl text-sm text-slate-400">
+          <span className="etiqueta-secao">Serviços NexRain</span>
+        <h1 className="titulo-pagina">Mapa de risco de alagamento</h1>
+          <p className="mt-2 max-w-2xl text-sm text-slate-500">
             Risco por região calculado pela API Java com a previsão real da Open-Meteo, o histórico de cada bairro e as
             ocorrências ativas. Clique em qualquer ponto do mapa para ver a chuva prevista hora a hora.
           </p>
         </div>
         <div className="flex flex-wrap gap-2">
-          <div className="flex rounded-lg border border-white/10 bg-white/5 p-1 text-sm">
+          <div className="flex rounded-lg border border-ink/15 bg-brand-50 p-1 text-sm">
             <button
               onClick={() => setSimulacao(false)}
-              className={`rounded-md px-3 py-1.5 ${!simulacao ? "bg-brand-500 text-white" : "text-slate-300"}`}
+              className={`rounded-md px-3 py-1.5 ${!simulacao ? "bg-brand-500 text-white" : "text-slate-700"}`}
             >
               Previsão real
             </button>
             <button
               onClick={() => setSimulacao(true)}
-              className={`rounded-md px-3 py-1.5 ${simulacao ? "bg-red-500 text-white" : "text-slate-300"}`}
+              className={`rounded-md px-3 py-1.5 ${simulacao ? "bg-red-500 text-white" : "text-slate-700"}`}
             >
               Simular temporal
             </button>
@@ -250,9 +251,9 @@ export default function MapaPage() {
         </div>
       </div>
 
-      {erro && <p className="mb-4 rounded-xl border border-red-500/30 bg-red-500/10 p-4 text-sm text-red-200">{erro}</p>}
+      {erro && <p className="mb-4 rounded-xl border border-red-500/30 bg-red-500/10 p-4 text-sm text-red-800">{erro}</p>}
       {simulacao && (
-        <p className="mb-4 rounded-xl border border-red-500/30 bg-red-500/10 p-3 text-sm text-red-200">
+        <p className="mb-4 rounded-xl border border-red-500/30 bg-red-500/10 p-3 text-sm text-red-800">
           Cenário simulado: um temporal de verão de até 52 mm/h centrado na zona oeste é somado à previsão real, para
           demonstrar como o NexRain reage a uma chuva forte.
         </p>
@@ -262,11 +263,11 @@ export default function MapaPage() {
         <div className="card relative overflow-hidden rounded-2xl">
           <Mapa className="h-[70vh] min-h-[420px] w-full" onPronto={aoCriarMapa} />
           {carregando && (
-            <div className="absolute left-1/2 top-4 z-[500] -translate-x-1/2 rounded-full bg-base-900/90 px-4 py-1.5 text-xs text-slate-300">
+            <div className="absolute left-1/2 top-4 z-[500] -translate-x-1/2 rounded-full bg-white/95 shadow px-4 py-1.5 text-xs text-slate-700">
               Atualizando previsão...
             </div>
           )}
-          <div className="absolute bottom-6 left-3 z-[500] rounded-xl bg-base-950/85 p-3 text-xs text-slate-300">
+          <div className="absolute bottom-6 left-3 z-[500] rounded-xl bg-white/95 shadow p-3 text-xs text-slate-700">
             {(Object.keys(NIVEIS) as (keyof typeof NIVEIS)[]).map((n) => (
               <div key={n} className="flex items-center gap-2">
                 <span className="h-2.5 w-2.5 rounded-full" style={{ backgroundColor: NIVEIS[n].cor }} />
@@ -279,8 +280,8 @@ export default function MapaPage() {
 
         <aside className="flex flex-col gap-4">
           <div className="card rounded-2xl p-5">
-            <p className="text-sm text-slate-400">Regiões em risco alto ou crítico</p>
-            <p className="mt-1 text-4xl font-bold text-white">
+            <p className="text-sm text-slate-500">Regiões em risco alto ou crítico</p>
+            <p className="mt-1 text-4xl font-bold text-ink">
               {emRisco}
               <span className="text-lg text-slate-500"> / {riscos.length}</span>
             </p>
@@ -288,7 +289,7 @@ export default function MapaPage() {
             <button className="botao mt-4 w-full" onClick={gerarAlertas}>
               Emitir alertas pela previsão
             </button>
-            {aviso && <p className="mt-3 text-xs text-brand-300">{aviso}</p>}
+            {aviso && <p className="mt-3 text-xs text-brand-700">{aviso}</p>}
           </div>
 
           <div className="card max-h-[52vh] overflow-y-auto rounded-2xl p-2">
@@ -296,10 +297,10 @@ export default function MapaPage() {
               <button
                 key={r.regiao.id}
                 onClick={() => mapaRef.current?.mapa.flyTo([r.regiao.latitude, r.regiao.longitude], 14)}
-                className="flex w-full items-center justify-between gap-3 rounded-xl px-3 py-2.5 text-left transition-colors hover:bg-white/5"
+                className="flex w-full items-center justify-between gap-3 rounded-xl px-3 py-2.5 text-left transition-colors hover:bg-brand-50"
               >
                 <div>
-                  <p className="text-sm font-medium text-white">{r.regiao.nome}</p>
+                  <p className="text-sm font-medium text-ink">{r.regiao.nome}</p>
                   <p className="text-xs text-slate-500">
                     {r.chuvaMaxima6h} mm/h · {r.probabilidadeChuva}% · {r.ocorrenciasAtivas} ocorr.
                   </p>

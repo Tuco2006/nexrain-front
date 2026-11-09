@@ -1,10 +1,11 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import { Public_Sans, Sora } from "next/font/google";
 import "./globals.css";
 import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
 
-const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
+const textos = Public_Sans({ subsets: ["latin"], variable: "--font-sans" });
+const titulos = Sora({ subsets: ["latin"], variable: "--font-titulo", weight: ["600", "700"] });
 
 export const metadata: Metadata = {
   title: "NexRain - Monitoramento inteligente de alagamentos",
@@ -14,10 +15,10 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="pt-BR" className={inter.variable}>
-      <body className="min-h-screen bg-base-950 font-sans antialiased">
+    <html lang="pt-BR" className={`${textos.variable} ${titulos.variable}`}>
+      <body className="min-h-screen font-sans antialiased">
         <Navbar />
-        <main className="min-h-[calc(100vh-140px)]">{children}</main>
+        <main className="min-h-[calc(100vh-260px)]">{children}</main>
         <Footer />
       </body>
     </html>

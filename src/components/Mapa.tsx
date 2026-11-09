@@ -28,9 +28,9 @@ export function Mapa({ className, centro = [-23.555, -46.64], zoom = 12, onPront
       if (cancelado || !elemento.current) return;
 
       mapa = L.map(elemento.current, { zoomControl: true, preferCanvas: false }).setView(centro, zoom);
-      // mapa base escuro da Esri (gratuito, sem chave) + camada com os nomes das ruas
+      // mapa base claro da Esri (gratuito, sem chave) + camada com os nomes das ruas
       const esri = "https://server.arcgisonline.com/ArcGIS/rest/services/Canvas";
-      L.tileLayer(`${esri}/World_Dark_Gray_Base/MapServer/tile/{z}/{y}/{x}`, {
+      L.tileLayer(`${esri}/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}`, {
         attribution: 'Tiles &copy; Esri &mdash; Esri, HERE, Garmin, &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
         maxNativeZoom: 16,
         maxZoom: 19,
@@ -38,7 +38,7 @@ export function Mapa({ className, centro = [-23.555, -46.64], zoom = 12, onPront
       const rotulos = mapa.createPane("rotulos");
       rotulos.style.zIndex = "450";
       rotulos.style.pointerEvents = "none";
-      L.tileLayer(`${esri}/World_Dark_Gray_Reference/MapServer/tile/{z}/{y}/{x}`, {
+      L.tileLayer(`${esri}/World_Light_Gray_Reference/MapServer/tile/{z}/{y}/{x}`, {
         maxNativeZoom: 16,
         maxZoom: 19,
         pane: "rotulos",

@@ -358,6 +358,10 @@ export default function MonitoramentoPage() {
 
           {carregandoCameras ? (
             <Carregando texto="Conectando às câmeras da cidade..." className="card w-full rounded-2xl p-6" />
+          ) : visiveis.length === 0 ? (
+            <p className="card rounded-2xl p-6 text-sm text-slate-600">
+              {filtro === "aovivo" ? "Nenhuma câmera ao vivo cadastrada no momento." : "Nenhuma câmera encontrada neste filtro."}
+            </p>
           ) : (
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
               {visiveis.map((c) => (

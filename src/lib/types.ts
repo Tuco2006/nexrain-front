@@ -26,6 +26,8 @@ export interface Camera {
   longitude: number;
   urlImagem: string | null;
   status: "ATIVA" | "INATIVA" | "MANUTENCAO";
+  aoVivo: boolean;
+  urlAoVivo: string | null;
 }
 
 export interface Ocorrencia {
@@ -153,6 +155,7 @@ export interface ResultadoAnaliseImagem {
 
 export interface EntradaAnaliseImagem {
   idCamera?: number;
+  urlImagem?: string;
   imagemBase64?: string;
   endereco?: string;
   latitude?: number;

@@ -180,15 +180,16 @@ export default function MapaPage() {
     cameras.forEach((c) => {
       const icone = L.divIcon({
         className: "",
-        html: `<div style="width:22px;height:22px;border-radius:6px;background:${c.status === "ATIVA" ? "#0b7a70" : "#64748b"};border:2px solid #ffffff;box-shadow:0 1px 4px rgba(0,0,0,.35);display:flex;align-items:center;justify-content:center;font-size:12px">📷</div>`,
+        html: `<div style="width:22px;height:22px;border-radius:6px;background:${c.status !== "ATIVA" ? "#64748b" : c.aoVivo ? "#dc2626" : "#0b7a70"};border:2px solid #ffffff;box-shadow:0 1px 4px rgba(0,0,0,.35);display:flex;align-items:center;justify-content:center;font-size:12px">📷</div>`,
         iconSize: [22, 22],
         iconAnchor: [11, 11],
       });
       L.marker([c.latitude, c.longitude], { icon: icone })
         .bindPopup(
           `<strong>${escapar(c.nome)}</strong><br/>${escapar(c.endereco)}<br/>Status: ${c.status.toLowerCase()}
-           ${c.urlImagem ? `<img src="${escapar(c.urlImagem)}" alt="" style="margin-top:6px;width:220px;border-radius:6px"/>` : ""}
-           <br/><a href="/monitoramento?camera=${c.id}">Analisar com IA →</a>`
+           ${c.aoVivo ? `<br/><span style="color:#dc2626;font-weight:700">● AO VIVO · CET-SP</span>` : ""}
+           ${c.urlImagem ? `<img src="${escapar(c.urlImagem)}${c.aoVivo ? "?" + Date.now() : ""}" alt="" style="margin-top:6px;width:220px;border-radius:6px"/>` : ""}
+           <br/><a href="/monitoramento?camera=${c.id}">${c.aoVivo ? "Ver ao vivo e analisar com IA →" : "Analisar com IA →"}</a>`
         )
         .addTo(grupo);
     });
